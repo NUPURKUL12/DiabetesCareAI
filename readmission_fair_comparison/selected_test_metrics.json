@@ -1,0 +1,21 @@
+{
+  "selected_model": "Baseline HistGradientBoosting (16 features)",
+  "feature_count": 16,
+  "selection_metric": "validation_average_precision",
+  "threshold_selected_on_validation": 0.5400000000000001,
+  "test_accuracy": 0.7226982318854935,
+  "test_precision": 0.19477219096024687,
+  "test_recall": 0.4798747763864043,
+  "test_f1": 0.27708198837959974,
+  "test_average_precision": 0.21875493670998322,
+  "test_roc_auc": 0.6700893308604448,
+  "test_confusion_matrix_tn_fp_fn_tp": [
+    13519,
+    4436,
+    1163,
+    1073
+  ],
+  "test_encounters": 20191,
+  "test_distinct_patients": 14304,
+  "warning": "Historical 1999-2008 data; research prototype only, not clinically validated. Prediction-time availability of features must be verified."
+}

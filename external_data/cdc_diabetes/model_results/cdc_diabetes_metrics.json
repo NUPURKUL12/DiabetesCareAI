@@ -1,0 +1,36 @@
+{
+  "dataset": "UCI CDC Diabetes Health Indicators",
+  "dataset_records": 253680,
+  "feature_count": 21,
+  "target": "Diabetes_binary",
+  "task": "diabetes_status_classification",
+  "split": {
+    "train": 177576,
+    "validation": 38052,
+    "test": 38052,
+    "random_states": [
+      42,
+      43
+    ]
+  },
+  "selected_model": "HistGradientBoosting",
+  "threshold_selected_on_validation": 0.23370156264915712,
+  "test_accuracy": 0.8081572584883843,
+  "test_precision": 0.3817751479289941,
+  "test_recall": 0.6084496416446624,
+  "test_f1": 0.46916812100058175,
+  "test_average_precision": 0.4194563384130598,
+  "test_roc_auc": 0.8274614620437053,
+  "test_positive_rate": 0.1393356459581625,
+  "test_confusion_matrix": [
+    [
+      27526,
+      5224
+    ],
+    [
+      2076,
+      3226
+    ]
+  ],
+  "warning": "Survey-based diabetes-status classification, not clinical diagnosis or 30-day readmission prediction. Random holdout evaluation is not independent external validation."
+}

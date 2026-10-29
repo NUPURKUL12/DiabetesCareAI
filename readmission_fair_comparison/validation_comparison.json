@@ -1,0 +1,26 @@
+[
+  {
+    "model": "Baseline HistGradientBoosting (16 features)",
+    "feature_count": 16,
+    "validation_average_precision": 0.22376860816008498,
+    "validation_roc_auc": 0.6663479260012233,
+    "validation_best_f1": 0.2829329962073325,
+    "validation_threshold": 0.5400000000000001
+  },
+  {
+    "model": "Expanded HistGradientBoosting (45 features)",
+    "feature_count": 45,
+    "validation_average_precision": 0.22340253783272915,
+    "validation_roc_auc": 0.6731730686006471,
+    "validation_best_f1": 0.28323799618651413,
+    "validation_threshold": 0.5800000000000002
+  },
+  {
+    "model": "Baseline Random Forest (16 features)",
+    "feature_count": 16,
+    "validation_average_precision": 0.20425729618913369,
+    "validation_roc_auc": 0.652062185031485,
+    "validation_best_f1": 0.2702386523163313,
+    "validation_threshold": 0.45000000000000007
+  }
+]

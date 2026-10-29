@@ -1,0 +1,24 @@
+{
+  "features": [
+    "age",
+    "gender",
+    "race",
+    "admission_type_id",
+    "discharge_disposition_id",
+    "admission_source_id",
+    "time_in_hospital",
+    "num_lab_procedures",
+    "num_procedures",
+    "num_medications",
+    "number_outpatient",
+    "number_emergency",
+    "number_inpatient",
+    "number_diagnoses",
+    "max_glu_serum",
+    "A1Cresult"
+  ],
+  "target_column": "readmitted_within_30_days",
+  "positive_class": 1,
+  "positive_class_meaning": "Readmitted within 30 days",
+  "dataset_source": "UCI Machine Learning Repository: Diabetes 130-US Hospitals for Years 1999-2008"
+}

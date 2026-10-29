@@ -1,0 +1,15 @@
+{
+  "model": "Logistic Regression",
+  "dataset": "UCI Diabetes 130-US Hospitals (1999-2008)",
+  "target": "Readmission within 30 days",
+  "train_encounters": 81278,
+  "test_encounters": 20488,
+  "train_distinct_patients": 57214,
+  "test_distinct_patients": 14304,
+  "positive_rate_test": 0.11553104256149942,
+  "accuracy": 0.6736138227254979,
+  "precision": 0.18568102444703144,
+  "recall": 0.5390790029573299,
+  "average_precision": 0.22647565719661958,
+  "roc_auc": 0.6661047490293561
+}

@@ -1,0 +1,32 @@
+{
+  "task": "Historical readmission within 30 days",
+  "tier_method": "Validation-set predicted probability tertiles",
+  "validation_cutoffs": {
+    "low_to_medium": 0.3832784525982264,
+    "medium_to_high": 0.5204458669156627
+  },
+  "test_results_by_tier": [
+    {
+      "risk_tier": "Low",
+      "encounters": 6819,
+      "mean_predicted_probability": 0.30155904757825863,
+      "observed_readmission_rate": 0.05572664613579704,
+      "actual_readmissions": 380
+    },
+    {
+      "risk_tier": "Medium",
+      "encounters": 6777,
+      "mean_predicted_probability": 0.4531430137932359,
+      "observed_readmission_rate": 0.09517485613103142,
+      "actual_readmissions": 645
+    },
+    {
+      "risk_tier": "High",
+      "encounters": 6595,
+      "mean_predicted_probability": 0.6090318918906867,
+      "observed_readmission_rate": 0.18362395754359362,
+      "actual_readmissions": 1211
+    }
+  ],
+  "warning": "Relative research-prototype tiers only. Probabilities are not clinically calibrated; thresholds are not medical decision rules. Historical 1999-2008 data; external validation is required."
+}
