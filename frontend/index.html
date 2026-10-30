@@ -132,6 +132,44 @@ section{padding:72px 0}.menu{display:block}.links{display:none;position:absolute
 .dc-disclaimer{margin-top:12px;font-size:.78rem;line-height:1.6;color:var(--mut)}
 @media(max-width:560px){.dc-fields{grid-template-columns:1fr}.dc-fields label{font-size:.86rem}}
 
+
+/* Real API dashboard */
+/* Original dashboard cards visibility restored */
+
+.api-panel { margin-top: 22px; }
+.api-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; margin-top:16px; }
+.api-stat { padding:15px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.035); min-width:0; }
+.api-stat .value { font-size:1.55rem; font-weight:750; letter-spacing:-.04em; overflow-wrap:anywhere; }
+.api-stat .label { color:var(--mut); font-size:.78rem; margin-top:5px; }
+.api-note { color:var(--mut); font-size:.84rem; line-height:1.55; margin-top:12px; }
+.api-table-wrap { overflow-x:auto; margin-top:14px; }
+.api-table { width:100%; border-collapse:collapse; min-width:680px; }
+.api-table th,.api-table td { padding:11px 10px; text-align:left; border-bottom:1px solid var(--line); font-size:.84rem; vertical-align:top; }
+.api-table th { color:var(--mut); font-weight:650; white-space:nowrap; }
+.api-tier { display:inline-block; padding:4px 9px; border-radius:999px; font-size:.76rem; font-weight:700; background:rgba(255,255,255,.08); }
+.api-toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:15px; }
+.api-toolbar input,.api-toolbar select,.api-intervention input,.api-intervention select,.api-intervention textarea {
+  color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:inherit; max-width:100%;
+}
+.api-toolbar input { flex:1 1 220px; }
+.api-toolbar select { min-width:145px; }
+.api-intervention { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:8px; min-width:290px; }
+.api-intervention textarea { grid-column:1/-1; min-height:58px; resize:vertical; }
+.api-intervention button { justify-self:start; }
+.api-status { min-height:1.3em; margin-top:10px; font-size:.84rem; color:var(--mut); }
+.api-status.error { color:#ff8585; }
+.api-status.success { color:#72d6a0; }
+.api-coverage { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-top:14px; }
+.api-coverage-item { padding:14px; border:1px solid var(--line); border-radius:12px; }
+.api-coverage-item strong { display:block; margin-bottom:5px; }
+.api-coverage-item span { display:inline-block; font-size:.76rem; font-weight:700; margin-bottom:7px; }
+.api-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; }
+.api-small { font-size:.78rem; color:var(--mut); }
+@media(max-width:600px) {
+  .api-stat .value { font-size:1.25rem; }
+  .api-intervention { min-width:250px; }
+}
+
 </style>
 </head>
 <body>
@@ -176,6 +214,59 @@ section{padding:72px 0}.menu{display:block}.links{display:none;position:absolute
 <div class="glass card c8"><h3>Indicator trend</h3><div class="sub">Demo monthly values. Toggle series or change the range.</div><div class="seg" id="seg"></div><div class="legend" id="leg"></div><div id="line"></div><div class="detail" id="ld" aria-live="polite">Select a point for details.</div></div>
 <div class="glass card c4"><h3>Reading the demo</h3><div class="sub">Plain-language notes</div><p class="mut" style="font-size:.9rem">A model score ranks records relative to each other. It is not a calibrated probability, so 0.62 does not mean a 62% chance of anything. Tier labels depend on cutoffs that would need validation.</p><div class="slot" style="margin-top:14px">Model explanation panel will appear here once real outputs are connected.</div></div>
 <div class="glass card c12"><h3>Indicator summary</h3><div class="sub">Demo rows. Sort by selecting a column heading.</div><div style="overflow-x:auto"><table id="tbl"><caption class="mut" style="text-align:left;font-size:.8rem;padding-bottom:6px">Illustrative values only</caption><thead></thead><tbody></tbody></table></div></div>
+
+<div class="glass card c12 api-panel">
+  <h3>Model performance dashboard</h3>
+  <p class="sub">Metrics from the saved held-out test evaluations. These are research results, not clinical validation.</p>
+  <div id="api-dashboard-status" class="api-status" role="status">Loading evaluation metrics?</div>
+  <div id="api-model-metrics"></div>
+</div>
+
+<div class="glass card c12 api-panel">
+  <h3>Readmission risk-tier analysis</h3>
+  <p class="sub">Observed results across the retrospective held-out test encounters. Tier scores are not calibrated clinical probabilities.</p>
+  <div id="api-tier-results"></div>
+</div>
+
+<div class="glass card c12 api-panel">
+  <h3>Data coverage and integration limits</h3>
+  <p class="sub">What the current datasets actually contain ? and what is still missing.</p>
+  <div id="api-data-coverage"></div>
+</div>
+
+<div class="glass card c12 api-panel" id="worklist">
+  <h3>Retrospective patient-prioritization worklist</h3>
+  <p class="sub">Explore anonymized encounter-level records from the held-out test set. This is not a live patient list or a clinical triage tool.</p>
+  <div class="api-toolbar">
+    <select id="worklist-tier" aria-label="Filter by risk tier">
+      <option value="All">All risk tiers</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+    <input id="worklist-search" type="search" placeholder="Search reference or priority?" aria-label="Search worklist">
+    <button class="btn p" id="worklist-refresh" type="button">Refresh</button>
+  </div>
+  <div id="worklist-summary" class="api-note"></div>
+  <div id="worklist-status" class="api-status" role="status"></div>
+  <div id="worklist-table" class="api-table-wrap"></div>
+  <div class="api-actions">
+    <button class="btn" id="worklist-prev" type="button">Previous</button>
+    <span id="worklist-page" class="api-small">Page 1</span>
+    <button class="btn" id="worklist-next" type="button">Next</button>
+  </div>
+  <p class="api-note">Only anonymized worklist references and encounter features are displayed. Individual test outcomes and direct patient identifiers are not shown.</p>
+</div>
+
+<div class="glass card c12 api-panel" id="interventions">
+  <h3>Intervention and follow-up tracker</h3>
+  <p class="sub">Review or update the follow-up status, planned date and notes for a worklist reference. Updates are saved through the local API.</p>
+  <div id="intervention-status" class="api-status" role="status"></div>
+  <div id="intervention-summary" class="api-note"></div>
+  <div id="intervention-table" class="api-table-wrap"></div>
+  <p class="api-note">The existing prototype follow-up entry is retained. Entries here are demonstration records, not real patient-care instructions.</p>
+</div>
+
 <div class="glass card c6">
 <h3>Hospital readmission assessment</h3>
 <p class="sub">Enter encounter details to query the historical readmission model.</p>
@@ -386,7 +477,7 @@ section{padding:72px 0}.menu{display:block}.links{display:none;position:absolute
 </main>
 
 <footer><div class="wrap">
-<div><div class="brand" style="margin-bottom:10px">DiabetesCare AI</div><p>A research prototype exploring healthcare data and AI for readmission and diabetes-related indicators. This site is a frontend-only preview.</p><p style="margin-top:10px">Responsible use: outputs are informational research results, not diagnoses or clinical decisions. No certifications, partnerships, or approvals are implied.</p></div>
+<div><div class="brand" style="margin-bottom:10px">DiabetesCare AI</div><p>A research prototype exploring healthcare data and AI for readmission and diabetes-related indicators. The frontend connects to a locally hosted research API for model predictions, evaluation metrics, retrospective worklist exploration and intervention tracking.</p><p style="margin-top:10px">Responsible use: outputs are informational research results, not diagnoses or clinical decisions. No certifications, partnerships, or approvals are implied.</p></div>
 <nav aria-label="Footer"><a href="#home">Home</a><a href="#platform">Platform</a><a href="#insights">Insights</a><a href="#how">How it works</a><a href="#about">About</a></nav>
 </div></footer>
 <div id="tip" role="tooltip"></div>
@@ -653,6 +744,221 @@ pick(3);
     numericFields:cdcNumeric,
     kind:'diabetes'
   });
+})();
+
+
+// Real API dashboard, retrospective worklist and intervention tracker.
+(() => {
+  const API = 'http://127.0.0.1:8765';
+  const $ = (id) => document.getElementById(id);
+  const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+  const pct = (value) => Number.isFinite(Number(value)) ? `${(Number(value) * 100).toFixed(1)}%` : '?';
+  const num = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString() : '?';
+  const metric = (label, value) =>
+    `<div class="api-stat"><div class="value">${escapeHTML(value)}</div><div class="label">${escapeHTML(label)}</div></div>`;
+  const setStatus = (id, message, type='') => {
+    const node = $(id);
+    if (!node) return;
+    node.textContent = message;
+    node.className = `api-status ${type}`.trim();
+  };
+  async function getJSON(url) {
+    const response = await fetch(`${API}${url}`);
+    const data = await response.json();
+    if (!response.ok || data.status === 'error') throw new Error(data.message || `Request failed (${response.status})`);
+    return data;
+  }
+
+  async function loadMetrics() {
+    try {
+      const data = await getJSON('/api/metrics');
+      const r = data.readmission;
+      const rm = r.metrics;
+      const d = data.diabetes_status;
+      const dm = d.metrics;
+
+      $('api-model-metrics').innerHTML = `
+        <h4 style="margin-top:18px">Hospital readmission model</h4>
+        <p class="api-note">${escapeHTML(r.task)} ? ${escapeHTML(r.dataset)} ? ${escapeHTML(r.evaluation)}</p>
+        <div class="api-grid">
+          ${metric('Test accuracy', pct(rm.test_accuracy))}
+          ${metric('Test precision', pct(rm.test_precision))}
+          ${metric('Test recall', pct(rm.test_recall))}
+          ${metric('Test F1', pct(rm.test_f1))}
+          ${metric('Test ROC-AUC', Number(rm.test_roc_auc).toFixed(3))}
+          ${metric('Average precision', Number(rm.test_average_precision).toFixed(3))}
+          ${metric('Test encounters', num(rm.test_encounters))}
+          ${metric('Distinct patients', num(rm.test_distinct_patients))}
+        </div>
+        <p class="api-note">Confusion matrix (TN / FP / FN / TP): ${rm.test_confusion_matrix_tn_fp_fn_tp.map(num).join(' / ')}. Decision threshold selected on validation data: ${Number(rm.threshold_selected_on_validation).toFixed(3)}.</p>
+        <p class="api-note">${escapeHTML(rm.warning)}</p>
+        <h4 style="margin-top:22px">CDC survey diabetes-status classifier</h4>
+        <p class="api-note">${escapeHTML(d.task)} ? ${escapeHTML(d.dataset)} ? ${escapeHTML(d.evaluation)}</p>
+        <div class="api-grid">
+          ${metric('Test accuracy', pct(dm.test_accuracy))}
+          ${metric('Test precision', pct(dm.test_precision))}
+          ${metric('Test recall', pct(dm.test_recall))}
+          ${metric('Test F1', pct(dm.test_f1))}
+          ${metric('Test ROC-AUC', Number(dm.test_roc_auc).toFixed(3))}
+          ${metric('Average precision', Number(dm.test_average_precision).toFixed(3))}
+          ${metric('Test records', num(dm.split.test))}
+          ${metric('Dataset records', num(dm.dataset_records))}
+        </div>
+        <p class="api-note">Confusion matrix: TN ${num(dm.test_confusion_matrix[0][0])}, FP ${num(dm.test_confusion_matrix[0][1])}, FN ${num(dm.test_confusion_matrix[1][0])}, TP ${num(dm.test_confusion_matrix[1][1])}. Validation-selected threshold: ${Number(dm.threshold_selected_on_validation).toFixed(3)}.</p>
+        <p class="api-note">${escapeHTML(dm.warning)}</p>`;
+
+      const tiers = r.risk_tiers.test_results_by_tier;
+      $('api-tier-results').innerHTML = `
+        <div class="api-table-wrap"><table class="api-table">
+          <thead><tr><th>Risk tier</th><th>Encounters</th><th>Mean model score</th><th>Observed readmission rate</th><th>Observed readmissions</th></tr></thead>
+          <tbody>${tiers.map(t => `<tr>
+            <td><span class="api-tier">${escapeHTML(t.risk_tier)}</span></td>
+            <td>${num(t.encounters)}</td><td>${pct(t.mean_predicted_probability)}</td>
+            <td>${pct(t.observed_readmission_rate)}</td><td>${num(t.actual_readmissions)}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+        <p class="api-note">Tier boundaries were derived from validation-set score tertiles: Low/Medium ${Number(r.risk_tiers.validation_cutoffs.low_to_medium).toFixed(3)}; Medium/High ${Number(r.risk_tiers.validation_cutoffs.medium_to_high).toFixed(3)}. These are research groupings, not medical decision rules.</p>`;
+
+      $('api-data-coverage').innerHTML = `
+        <div class="api-coverage">${data.data_coverage.map(item => `
+          <div class="api-coverage-item"><strong>${escapeHTML(item.category)}</strong>
+            <span>${escapeHTML(item.status)}</span><div class="api-note">${escapeHTML(item.details)}</div>
+          </div>`).join('')}</div>
+        <h4 style="margin-top:20px">Integration limitations</h4>
+        <ul class="api-note">${data.integration_limitations.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>`;
+      setStatus('api-dashboard-status', 'Live metrics loaded from the local API.', 'success');
+    } catch (error) {
+      setStatus('api-dashboard-status', `Could not load metrics: ${error.message}`, 'error');
+    }
+  }
+
+  const PAGE_SIZE = 20;
+  let worklistOffset = 0;
+  let worklistTotal = 0;
+  let worklistRecords = [];
+  let interventionRecords = {};
+
+  async function loadInterventions() {
+    const data = await getJSON('/api/interventions');
+    interventionRecords = data.records || {};
+    renderInterventions();
+    return data;
+  }
+
+  function renderInterventions() {
+    const entries = Object.values(interventionRecords);
+    $('intervention-summary').textContent = `${entries.length} saved intervention record(s).`;
+    if (!entries.length) {
+      $('intervention-table').innerHTML = '<p class="api-note">No intervention records saved yet. Use the worklist editor to add one.</p>';
+      return;
+    }
+    $('intervention-table').innerHTML = `<table class="api-table">
+      <thead><tr><th>Worklist reference</th><th>Status</th><th>Follow-up date</th><th>Notes</th><th>Last updated</th></tr></thead>
+      <tbody>${entries.map(item => `<tr>
+        <td>${escapeHTML(item.worklist_reference)}</td><td>${escapeHTML(item.status)}</td>
+        <td>${escapeHTML(item.follow_up_date || '?')}</td><td>${escapeHTML(item.notes || '?')}</td>
+        <td>${escapeHTML(item.updated_at || '?')}</td>
+      </tr>`).join('')}</tbody></table>`;
+  }
+
+  function interventionEditor(record) {
+    const saved = interventionRecords[record.worklist_reference] || {};
+    const status = saved.status || 'Not reviewed';
+    return `<form class="api-intervention" data-intervention-form="${escapeHTML(record.worklist_reference)}">
+      <select name="status" aria-label="Intervention status">
+        ${['Not reviewed','Reviewed','Follow-up planned','Completed'].map(s => `<option ${s === status ? 'selected' : ''}>${s}</option>`).join('')}
+      </select>
+      <input name="follow_up_date" type="date" aria-label="Follow-up date" value="${escapeHTML(saved.follow_up_date || '')}">
+      <textarea name="notes" aria-label="Intervention notes" placeholder="Add follow-up notes?">${escapeHTML(saved.notes || '')}</textarea>
+      <button class="btn p" type="submit">Save update</button>
+    </form>`;
+  }
+
+  async function loadWorklist() {
+    setStatus('worklist-status', 'Loading worklist?');
+    const tier = $('worklist-tier').value;
+    const search = $('worklist-search').value.trim();
+    const params = new URLSearchParams({limit:String(PAGE_SIZE), offset:String(worklistOffset)});
+    if (tier !== 'All') params.set('risk_tier', tier);
+    if (search) params.set('q', search);
+
+    try {
+      const data = await getJSON(`/api/worklist?${params.toString()}`);
+      worklistRecords = data.records || [];
+      worklistTotal = data.total || 0;
+      $('worklist-summary').textContent =
+        `${num(worklistTotal)} matching encounters ? All tiers: High ${num(data.tier_counts.High)}, Medium ${num(data.tier_counts.Medium)}, Low ${num(data.tier_counts.Low)}.`;
+      $('worklist-table').innerHTML = worklistRecords.length ? `
+        <table class="api-table">
+          <thead><tr><th>Reference / priority</th><th>Model score / tier</th><th>Age group</th><th>Stay</th><th>Prior visits (outpatient / emergency / inpatient)</th><th>Labs / procedures / medications</th><th>Diagnoses</th><th>Glucose / A1C</th><th>Intervention update</th></tr></thead>
+          <tbody>${worklistRecords.map(record => `<tr>
+            <td><strong>${escapeHTML(record.worklist_reference)}</strong><br><span class="api-small">${escapeHTML(record.priority)}</span></td>
+            <td>${pct(record.predicted_score)}<br><span class="api-tier">${escapeHTML(record.risk_tier)}</span></td>
+            <td>${escapeHTML(record.age_group)}</td>
+            <td>${num(record.length_of_stay_days)} days</td>
+            <td>${num(record.prior_outpatient_visits)} / ${num(record.prior_emergency_visits)} / ${num(record.prior_inpatient_visits)}</td>
+            <td>${num(record.lab_procedures)} / ${num(record.procedures)} / ${num(record.medication_count)}</td>
+            <td>${num(record.diagnosis_count)}</td>
+            <td>${escapeHTML(record.max_glucose_result)} / ${escapeHTML(record.a1c_result)}</td>
+            <td>${interventionEditor(record)}</td>
+          </tr>`).join('')}</tbody>
+        </table>` : '<p class="api-note">No matching encounters found.</p>';
+      $('worklist-page').textContent = `Showing ${worklistRecords.length ? worklistOffset + 1 : 0}?${Math.min(worklistOffset + worklistRecords.length, worklistTotal)} of ${num(worklistTotal)}`;
+      $('worklist-prev').disabled = worklistOffset <= 0;
+      $('worklist-next').disabled = worklistOffset + PAGE_SIZE >= worklistTotal;
+      setStatus('worklist-status', data.warning || 'Worklist loaded.', 'success');
+    } catch (error) {
+      $('worklist-table').replaceChildren();
+      setStatus('worklist-status', `Could not load worklist: ${error.message}`, 'error');
+    }
+  }
+
+  $('worklist-tier').addEventListener('change', () => { worklistOffset = 0; loadWorklist(); });
+  $('worklist-search').addEventListener('input', () => {
+    clearTimeout(window.__worklistSearchTimer);
+    window.__worklistSearchTimer = setTimeout(() => { worklistOffset = 0; loadWorklist(); }, 300);
+  });
+  $('worklist-refresh').addEventListener('click', () => { loadWorklist(); loadInterventions().catch(() => {}); });
+  $('worklist-prev').addEventListener('click', () => { worklistOffset = Math.max(0, worklistOffset - PAGE_SIZE); loadWorklist(); });
+  $('worklist-next').addEventListener('click', () => {
+    if (worklistOffset + PAGE_SIZE < worklistTotal) { worklistOffset += PAGE_SIZE; loadWorklist(); }
+  });
+
+  $('worklist-table').addEventListener('submit', async (event) => {
+    const form = event.target.closest('[data-intervention-form]');
+    if (!form) return;
+    event.preventDefault();
+    const reference = form.dataset.interventionForm;
+    const formData = new FormData(form);
+    const body = {
+      worklist_reference: reference,
+      status: formData.get('status'),
+      follow_up_date: formData.get('follow_up_date') || '',
+      notes: formData.get('notes') || ''
+    };
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const response = await fetch(`${API}/api/interventions`, {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok || data.status === 'error') throw new Error(data.message || 'Save failed.');
+      setStatus('intervention-status', `Saved intervention for ${reference}.`, 'success');
+      await loadInterventions();
+      await loadWorklist();
+    } catch (error) {
+      setStatus('intervention-status', `Could not save update: ${error.message}`, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  loadMetrics();
+  loadInterventions().catch(error => setStatus('intervention-status', error.message, 'error'));
+  loadWorklist();
 })();
 
 </script>

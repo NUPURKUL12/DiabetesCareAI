@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiabetesCare AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050b1a;--bg2:#0a1630;--ink:#e8f1ff;--mut:#9aaccb;--cy:#22d3ee;--te:#14b8a6;--mi:#6ee7b7;--vi:#8b5cf6;--line:rgba(120,180,255,.16);--glass:rgba(14,28,56,.62);--warn:#f5b84b;--bad:#fb7185;
+--d:'Sora',system-ui,sans-serif;--b:'IBM Plex Sans',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--b);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 80% 8%,rgba(34,211,238,.14),transparent 70%),radial-gradient(50% 40% at 10% 40%,rgba(139,92,246,.12),transparent 70%),linear-gradient(180deg,var(--bg),var(--bg2) 60%,var(--bg))}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--d);line-height:1.12;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(2.2rem,5.2vw,4.1rem)}h2{font-size:clamp(1.7rem,3.4vw,2.6rem)}h3{font-size:1.15rem}
+p{margin:0}.mut{color:var(--mut)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+section{padding:104px 0;position:relative}
+#prog{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--cy),var(--mi));z-index:60}
+nav{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;transition:background .3s,border-color .3s,padding .3s;padding:18px 0;border-bottom:1px solid transparent}
+nav.s{background:rgba(5,11,26,.82);backdrop-filter:blur(12px);border-color:var(--line);padding:10px 0}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font:700 1.05rem var(--d);text-decoration:none}
+.links{display:flex;gap:4px;align-items:center}
+.links a{padding:8px 13px;border-radius:99px;text-decoration:none;color:var(--mut);font-size:.93rem;transition:color .2s,background .2s}
+.links a:hover,.links a.on{color:var(--ink);background:rgba(34,211,238,.1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 .95rem var(--b);cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--cy)}
+.btn.p{background:linear-gradient(135deg,var(--cy),var(--te));color:#04141c;border:0;box-shadow:0 8px 28px -10px rgba(34,211,238,.7)}
+.menu{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 70px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+.hero p.lead{margin:22px 0 30px;max-width:52ch;color:var(--mut);font-size:1.08rem}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.note{margin-top:22px;font-size:.84rem;color:var(--mut);max-width:56ch}
+.stage{position:relative;aspect-ratio:1;max-width:520px;width:100%;margin:0 auto;perspective:900px}
+.orb{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx,10deg)) rotateY(var(--ry,-12deg));transition:transform .25s ease-out}
+.core{position:absolute;inset:24%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a5f3fc,#22d3ee 22%,#0e5a7a 55%,#071a38 80%);box-shadow:0 0 90px 10px rgba(34,211,238,.35),inset -20px -26px 50px rgba(5,11,26,.7);animation:breathe 6s ease-in-out infinite}
+.ring{position:absolute;inset:6%;border-radius:50%;border:1.5px solid rgba(110,231,183,.5);animation:spin 18s linear infinite}
+.ring.b{inset:14%;border-color:rgba(34,211,238,.55);transform:rotateX(70deg);animation-duration:24s}
+.ring.c{inset:0;border-color:rgba(139,92,246,.5);border-style:dashed;transform:rotateY(68deg);animation-duration:30s;animation-direction:reverse}
+.ring.a{transform:rotateX(72deg) rotateY(18deg)}
+.ring i{position:absolute;top:-5px;left:50%;width:10px;height:10px;border-radius:50%;background:var(--mi);box-shadow:0 0 14px var(--mi)}
+.chip{position:absolute;padding:9px 13px;border-radius:12px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(8px);font-size:.78rem;line-height:1.35;animation:float 7s ease-in-out infinite;transform:translateZ(60px)}
+.chip b{display:block;font:600 .95rem var(--d);color:var(--cy)}
+@keyframes spin{to{rotate:360deg}}@keyframes float{50%{translate:0 -10px}}@keyframes breathe{50%{filter:brightness(1.18)}}
+.cue{position:absolute;bottom:22px;left:50%;translate:-50% 0;color:var(--mut);font-size:.82rem;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cue span{width:1px;height:34px;background:linear-gradient(var(--cy),transparent);animation:drop 2s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.head{max-width:62ch;margin-bottom:44px}.head p{margin-top:14px;color:var(--mut)}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(10px)}
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}
+.dim{padding:26px;cursor:pointer;text-align:left;color:inherit;font:inherit;transition:transform .35s,border-color .3s,box-shadow .3s;transform-style:preserve-3d}
+.dim:hover,.dim[aria-expanded=true]{transform:translateY(-6px) rotateX(3deg);border-color:var(--cy);box-shadow:0 22px 50px -24px rgba(34,211,238,.55)}
+.dim svg{width:44px;height:44px;margin-bottom:16px}
+.dim p{margin-top:8px;color:var(--mut);font-size:.95rem}
+.more{max-height:0;overflow:hidden;transition:max-height .4s;color:var(--ink);font-size:.9rem}
+.dim[aria-expanded=true] .more{max-height:200px;margin-top:12px}
+.hub{text-align:center;margin-top:20px;color:var(--mut);font-size:.9rem}
+.tag{display:inline-block;padding:4px 11px;border-radius:99px;border:1px solid rgba(245,184,75,.5);color:var(--warn);font-size:.78rem;background:rgba(245,184,75,.07)}
+.board{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{padding:24px;min-width:0}
+.card h3{margin-bottom:4px}.card .sub{color:var(--mut);font-size:.86rem;margin-bottom:14px}
+.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+svg text{fill:var(--mut);font:11px var(--b)}
+.ax{stroke:var(--line)}
+.bar{fill:url(#gb);cursor:pointer;transition:opacity .2s,filter .2s}.bar:hover,.bar:focus{filter:brightness(1.35);outline:none}.bar.sel{fill:var(--mi)}
+.pt{cursor:pointer;transition:r .15s}.pt:hover,.pt:focus{r:7;outline:none}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 10px}
+.legend button,.seg button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:5px 12px;font:500 .8rem var(--b);cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.legend button[aria-pressed=false]{opacity:.45;text-decoration:line-through}
+.legend i{width:10px;height:10px;border-radius:50%}
+.seg{display:flex;gap:6px;margin-bottom:8px}.seg button[aria-pressed=true]{background:rgba(34,211,238,.15);border-color:var(--cy)}
+.detail{margin-top:10px;min-height:2.8em;font-size:.88rem;color:var(--mut)}
+.detail b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th button{all:unset;cursor:pointer;font-weight:600;color:var(--ink)}th button:focus-visible{outline:2px solid var(--cy)}
+tbody tr:hover{background:rgba(34,211,238,.07)}
+.pill{padding:2px 10px;border-radius:99px;font-size:.78rem;border:1px solid}
+.range{width:100%;accent-color:var(--cy);margin-top:6px}
+#tip{position:fixed;z-index:90;pointer-events:none;opacity:0;transition:opacity .15s;max-width:260px;padding:10px 13px;border-radius:10px;background:#07122a;border:1px solid rgba(34,211,238,.4);font-size:.82rem;line-height:1.45;box-shadow:0 14px 34px -12px #000}
+#tip b{color:var(--cy);display:block;font-family:var(--d)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.f{padding:26px;position:relative;overflow:hidden;transition:transform .3s,border-color .3s}
+.f::after{content:"";position:absolute;inset:auto -30% -60% auto;width:70%;aspect-ratio:1;border-radius:50%;background:var(--g,var(--cy));opacity:.12;filter:blur(30px);transition:opacity .3s}
+.f:hover{transform:translateY(-5px);border-color:var(--g,var(--cy))}.f:hover::after{opacity:.28}
+.f svg{width:34px;height:34px;margin-bottom:14px;stroke:var(--g,var(--cy))}
+.f p{margin-top:8px;color:var(--mut);font-size:.93rem}
+.flow{position:relative;display:flex;justify-content:space-between;gap:10px;margin:10px 0 28px}
+.flow::before{content:"";position:absolute;top:34px;left:7%;right:7%;height:2px;background:repeating-linear-gradient(90deg,var(--cy) 0 10px,transparent 10px 20px);opacity:.5;animation:dash 1.4s linear infinite}
+@keyframes dash{to{background-position:20px 0}}
+.node{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;background:none;border:0;color:var(--mut);font:600 .9rem var(--d);cursor:pointer;text-align:center}
+.node span{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:#08142c;border:1.5px solid var(--line);font:700 1.1rem var(--d);color:var(--ink);transition:.3s}
+.node:hover span,.node[aria-selected=true] span{border-color:var(--mi);box-shadow:0 0 30px -4px var(--mi);transform:scale(1.08)}
+.node[aria-selected=true]{color:var(--ink)}
+.panel{padding:24px;min-height:110px}
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.two .glass{padding:24px}.two p{margin-top:8px;color:var(--mut);font-size:.94rem}
+.slot{border:1px dashed rgba(34,211,238,.35);border-radius:14px;padding:18px;color:var(--mut);font-size:.88rem;text-align:center}
+footer{border-top:1px solid var(--line);padding:46px 0 60px;font-size:.88rem;color:var(--mut)}
+footer .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:30px}
+footer nav{all:unset;display:flex;gap:16px;flex-wrap:wrap}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s,transform .8s}.rv.in{opacity:1;transform:none}
+.hero .rv:nth-child(2){transition-delay:.12s}.hero .rv:nth-child(3){transition-delay:.24s}
+@media(max-width:900px){.hero .wrap,.dims,.feat,.two,footer .wrap{grid-template-columns:1fr}.stage{max-width:360px}.c4,.c5,.c6,.c7,.c8{grid-column:span 12}
+section{padding:72px 0}.menu{display:block}.links{display:none;position:absolute;top:100%;left:12px;right:12px;flex-direction:column;align-items:stretch;background:#07122a;border:1px solid var(--line);border-radius:14px;padding:8px}.links.open{display:flex}
+.flow{flex-direction:column;align-items:stretch}.flow::before{display:none}.node{flex-direction:row;text-align:left}.node span{width:52px;height:52px}.chip.x{display:none}.cue{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+
+/* Live model forms */
+.dc-form{margin-top:16px}
+.dc-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.dc-fields label{display:flex;flex-direction:column;gap:7px;color:var(--mut);font-size:.82rem;min-width:0}
+.dc-fields input,.dc-fields select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:rgba(7,19,35,.82);color:var(--ink);font:500 .9rem var(--b);outline:none}
+.dc-fields input:focus,.dc-fields select:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.dc-fields select option{background:#0b1729;color:#f0f7ff}
+.dc-submit{margin-top:18px;width:100%;justify-content:center}
+.dc-status{font-size:.86rem;color:var(--mut);margin-top:12px;min-height:1.2em}
+.dc-status[data-state="error"]{color:#fda4af}
+.dc-status[data-state="success"]{color:var(--te)}
+.dc-result{margin-top:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(5,15,28,.72);overflow-wrap:anywhere}
+.dc-result[hidden]{display:none}
+.dc-result h4{font-size:1rem;margin-bottom:8px;color:var(--ink)}
+.dc-score{font-size:2rem;font-weight:800;letter-spacing:-.04em;color:var(--cy)}
+.dc-result p{color:var(--mut);font-size:.86rem;margin-top:7px}
+.dc-result pre{white-space:pre-wrap;overflow-wrap:anywhere;font: .78rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--ink);margin-top:12px}
+.dc-disclaimer{margin-top:12px;font-size:.78rem;line-height:1.6;color:var(--mut)}
+@media(max-width:560px){.dc-fields{grid-template-columns:1fr}.dc-fields label{font-size:.86rem}}
+
+
+/* Real API dashboard */
+#insights .card.c5,
+#insights .card.c7,
+#insights .card.c8,
+#insights .card.c4,
+#insights .card.c12:not(.api-panel) { display: none !important; }
+
+.api-panel { margin-top: 22px; }
+.api-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; margin-top:16px; }
+.api-stat { padding:15px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.035); min-width:0; }
+.api-stat .value { font-size:1.55rem; font-weight:750; letter-spacing:-.04em; overflow-wrap:anywhere; }
+.api-stat .label { color:var(--mut); font-size:.78rem; margin-top:5px; }
+.api-note { color:var(--mut); font-size:.84rem; line-height:1.55; margin-top:12px; }
+.api-table-wrap { overflow-x:auto; margin-top:14px; }
+.api-table { width:100%; border-collapse:collapse; min-width:680px; }
+.api-table th,.api-table td { padding:11px 10px; text-align:left; border-bottom:1px solid var(--line); font-size:.84rem; vertical-align:top; }
+.api-table th { color:var(--mut); font-weight:650; white-space:nowrap; }
+.api-tier { display:inline-block; padding:4px 9px; border-radius:999px; font-size:.76rem; font-weight:700; background:rgba(255,255,255,.08); }
+.api-toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:15px; }
+.api-toolbar input,.api-toolbar select,.api-intervention input,.api-intervention select,.api-intervention textarea {
+  color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:inherit; max-width:100%;
+}
+.api-toolbar input { flex:1 1 220px; }
+.api-toolbar select { min-width:145px; }
+.api-intervention { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:8px; min-width:290px; }
+.api-intervention textarea { grid-column:1/-1; min-height:58px; resize:vertical; }
+.api-intervention button { justify-self:start; }
+.api-status { min-height:1.3em; margin-top:10px; font-size:.84rem; color:var(--mut); }
+.api-status.error { color:#ff8585; }
+.api-status.success { color:#72d6a0; }
+.api-coverage { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-top:14px; }
+.api-coverage-item { padding:14px; border:1px solid var(--line); border-radius:12px; }
+.api-coverage-item strong { display:block; margin-bottom:5px; }
+.api-coverage-item span { display:inline-block; font-size:.76rem; font-weight:700; margin-bottom:7px; }
+.api-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; }
+.api-small { font-size:.78rem; color:var(--mut); }
+@media(max-width:600px) {
+  .api-stat .value { font-size:1.25rem; }
+  .api-intervention { min-width:250px; }
+}
+
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="nav"><div class="wrap">
+<a class="brand" href="#home" aria-label="DiabetesCare AI home"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#6ee7b7"/></linearGradient></defs><path d="M16 3C9 12 6 16 6 20a10 10 0 0020 0c0-4-3-8-10-17z" fill="none" stroke="url(#lg)" stroke-width="2"/><path d="M10 20h3l2-4 3 7 2-3h2" fill="none" stroke="url(#lg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>DiabetesCare AI</a>
+<button class="menu" id="menu" aria-expanded="false" aria-controls="links">Menu</button>
+<div class="links" id="links"><a href="#home">Home</a><a href="#platform">Platform</a><a href="#insights">Insights</a><a href="#how">How it works</a><a href="#about">About</a><a class="btn p" href="#insights" style="padding:8px 16px;margin-left:6px">Explore platform</a></div>
+</div></nav>
+
+<main>
+<section class="hero" id="home"><div class="wrap">
+<div>
+<h1 class="rv">Health data and AI, read together.</h1>
+<p class="lead rv">DiabetesCare AI is a research project exploring how clinical records, social context, and daily behavior can inform earlier, clearer insight into hospital readmission and diabetes-related health indicators.</p>
+<div class="cta rv"><a class="btn p" href="#insights">Explore the analytics</a><a class="btn" href="#how">See how it works</a></div>
+<p class="note rv">Research prototype. Not a medical device, not a diagnosis, and not clinically validated. Charts on this page use illustrative demo data.</p>
+</div>
+<div class="stage" id="stage" aria-hidden="true"><div class="orb" id="orb">
+<div class="ring a"><i></i></div><div class="ring b"><i></i></div><div class="ring c"><i></i></div><div class="core"></div>
+<div class="chip" style="top:6%;left:-2%">Readmission score<b>demo 0.62</b></div>
+<div class="chip x" style="bottom:12%;left:-6%;animation-delay:-2s">EHR + SDOH + lifestyle<b>3 dimensions</b></div>
+<div class="chip" style="top:34%;right:-6%;animation-delay:-4s">Human review<b>always required</b></div>
+</div></div>
+</div>
+<a class="cue" href="#platform"><span></span>Scroll</a>
+</section>
+
+<section id="platform"><div class="wrap">
+<div class="head rv"><h2>Three kinds of information, one picture</h2><p>The platform is designed around three analytical dimensions. They describe where the project is heading; they are not a claim that every dataset is already connected.</p></div>
+<div class="dims rv" id="dims"></div>
+<p class="hub rv">Select a panel to see what each dimension would contribute.</p>
+<div class="head rv" style="margin-top:84px"><h2>What the project explores</h2><p>Each capability below is an intended direction, not shipped functionality.</p></div>
+<div class="feat rv" id="feat"></div>
+</div></section>
+
+<section id="insights"><div class="wrap">
+<div class="head rv"><h2>Interactive analytics preview</h2><p>Hover, focus, click, and toggle. Every value below is <span class="tag">demo data</span> from one central file, and is not patient information or model performance.</p></div>
+<div class="board rv">
+<div class="glass card c5"><h3>Readmission score gauge</h3><div class="sub">Demo score and demo tier cutoffs</div><div id="gauge"></div><label class="mut" style="font-size:.84rem" for="gs">Try a demo score: <b id="gv" style="color:var(--ink)"></b></label><input class="range" id="gs" type="range" min="0" max="100" value="62"><div class="detail" id="gd" aria-live="polite"></div></div>
+<div class="glass card c7"><h3>Score distribution</h3><div class="sub">Demo cohort, share of records per score band. Click a bar.</div><div id="bars"></div><div class="detail" id="bd" aria-live="polite">Select a bar for details.</div></div>
+<div class="glass card c8"><h3>Indicator trend</h3><div class="sub">Demo monthly values. Toggle series or change the range.</div><div class="seg" id="seg"></div><div class="legend" id="leg"></div><div id="line"></div><div class="detail" id="ld" aria-live="polite">Select a point for details.</div></div>
+<div class="glass card c4"><h3>Reading the demo</h3><div class="sub">Plain-language notes</div><p class="mut" style="font-size:.9rem">A model score ranks records relative to each other. It is not a calibrated probability, so 0.62 does not mean a 62% chance of anything. Tier labels depend on cutoffs that would need validation.</p><div class="slot" style="margin-top:14px">Model explanation panel will appear here once real outputs are connected.</div></div>
+<div class="glass card c12"><h3>Indicator summary</h3><div class="sub">Demo rows. Sort by selecting a column heading.</div><div style="overflow-x:auto"><table id="tbl"><caption class="mut" style="text-align:left;font-size:.8rem;padding-bottom:6px">Illustrative values only</caption><thead></thead><tbody></tbody></table></div></div>
+
+<div class="glass card c12 api-panel">
+  <h3>Model performance dashboard</h3>
+  <p class="sub">Metrics from the saved held-out test evaluations. These are research results, not clinical validation.</p>
+  <div id="api-dashboard-status" class="api-status" role="status">Loading evaluation metrics?</div>
+  <div id="api-model-metrics"></div>
+</div>
+
+<div class="glass card c12 api-panel">
+  <h3>Readmission risk-tier analysis</h3>
+  <p class="sub">Observed results across the retrospective held-out test encounters. Tier scores are not calibrated clinical probabilities.</p>
+  <div id="api-tier-results"></div>
+</div>
+
+<div class="glass card c12 api-panel">
+  <h3>Data coverage and integration limits</h3>
+  <p class="sub">What the current datasets actually contain ? and what is still missing.</p>
+  <div id="api-data-coverage"></div>
+</div>
+
+<div class="glass card c12 api-panel" id="worklist">
+  <h3>Retrospective patient-prioritization worklist</h3>
+  <p class="sub">Explore anonymized encounter-level records from the held-out test set. This is not a live patient list or a clinical triage tool.</p>
+  <div class="api-toolbar">
+    <select id="worklist-tier" aria-label="Filter by risk tier">
+      <option value="All">All risk tiers</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+    <input id="worklist-search" type="search" placeholder="Search reference or priority?" aria-label="Search worklist">
+    <button class="btn p" id="worklist-refresh" type="button">Refresh</button>
+  </div>
+  <div id="worklist-summary" class="api-note"></div>
+  <div id="worklist-status" class="api-status" role="status"></div>
+  <div id="worklist-table" class="api-table-wrap"></div>
+  <div class="api-actions">
+    <button class="btn" id="worklist-prev" type="button">Previous</button>
+    <span id="worklist-page" class="api-small">Page 1</span>
+    <button class="btn" id="worklist-next" type="button">Next</button>
+  </div>
+  <p class="api-note">Only anonymized worklist references and encounter features are displayed. Individual test outcomes and direct patient identifiers are not shown.</p>
+</div>
+
+<div class="glass card c12 api-panel" id="interventions">
+  <h3>Intervention and follow-up tracker</h3>
+  <p class="sub">Review or update the follow-up status, planned date and notes for a worklist reference. Updates are saved through the local API.</p>
+  <div id="intervention-status" class="api-status" role="status"></div>
+  <div id="intervention-summary" class="api-note"></div>
+  <div id="intervention-table" class="api-table-wrap"></div>
+  <p class="api-note">The existing prototype follow-up entry is retained. Entries here are demonstration records, not real patient-care instructions.</p>
+</div>
+
+<div class="glass card c6">
+<h3>Hospital readmission assessment</h3>
+<p class="sub">Enter encounter details to query the historical readmission model.</p>
+<form id="readmission-form" class="dc-form">
+  <div class="dc-fields">
+    <label>Age group
+      <select name="age" required>
+        <option value="[0-10)">0?10</option>
+        <option value="[10-20)">10?20</option>
+        <option value="[20-30)">20?30</option>
+        <option value="[30-40)">30?40</option>
+        <option value="[40-50)">40?50</option>
+        <option value="[50-60)" selected>50?60</option>
+        <option value="[60-70)">60?70</option>
+        <option value="[70-80)">70?80</option>
+        <option value="[80-90)">80?90</option>
+        <option value="[90-100)">90?100</option>
+      </select>
+    </label>
+    <label>Gender
+      <select name="gender" required>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+      </select>
+    </label>
+    <label>Race
+      <select name="race" required>
+        <option value="Caucasian">Caucasian</option>
+        <option value="AfricanAmerican">African American</option>
+        <option value="Asian">Asian</option>
+        <option value="Hispanic">Hispanic</option>
+        <option value="Other">Other</option>
+        <option value="?">Unknown / not recorded</option>
+      </select>
+    </label>
+    <label>Admission type ID
+      <select name="admission_type_id" required>
+        <option value="1">1</option><option value="2">2</option>
+        <option value="3">3</option><option value="4">4</option>
+        <option value="5">5</option><option value="6">6</option>
+        <option value="7">7</option><option value="8">8</option>
+      </select>
+    </label>
+    <label>Discharge disposition ID
+      <input name="discharge_disposition_id" type="number" min="1" max="30" value="1" required>
+    </label>
+    <label>Admission source ID
+      <input name="admission_source_id" type="number" min="1" max="25" value="1" required>
+    </label>
+    <label>Days in hospital
+      <input name="time_in_hospital" type="number" min="1" max="14" value="4" required>
+    </label>
+    <label>Lab procedures
+      <input name="num_lab_procedures" type="number" min="0" max="200" value="40" required>
+    </label>
+    <label>Procedures
+      <input name="num_procedures" type="number" min="0" max="10" value="1" required>
+    </label>
+    <label>Medications
+      <input name="num_medications" type="number" min="0" max="200" value="15" required>
+    </label>
+    <label>Outpatient visits (previous)
+      <input name="number_outpatient" type="number" min="0" max="100" value="0" required>
+    </label>
+    <label>Emergency visits (previous)
+      <input name="number_emergency" type="number" min="0" max="100" value="0" required>
+    </label>
+    <label>Inpatient visits (previous)
+      <input name="number_inpatient" type="number" min="0" max="100" value="0" required>
+    </label>
+    <label>Number of diagnoses
+      <input name="number_diagnoses" type="number" min="1" max="20" value="5" required>
+    </label>
+    <label>Maximum glucose serum result
+      <select name="max_glu_serum" required>
+        <option value="None">Not measured / no result</option>
+        <option value="Norm">Normal</option>
+        <option value=">200">Above 200</option>
+        <option value=">300">Above 300</option>
+      </select>
+    </label>
+    <label>HbA1c result
+      <select name="A1Cresult" required>
+        <option value="None">Not measured / no result</option>
+        <option value="Norm">Normal</option>
+        <option value=">7">Above 7</option>
+        <option value=">8">Above 8</option>
+      </select>
+    </label>
+  </div>
+  <button class="btn p dc-submit" type="submit">Assess readmission score ?</button>
+  <p class="dc-status" id="readmission-status" role="status" aria-live="polite"></p>
+  <div class="dc-result" id="readmission-result" aria-live="polite" hidden></div>
+</form>
+<p class="dc-disclaimer">Research prototype only. Historical 1999?2008 hospital data; the score is not a clinically calibrated probability or medical advice.</p>
+</div>
+<div class="glass card c6">
+<h3>Diabetes-status assessment</h3>
+<p class="sub">Enter survey-style health indicators for the CDC research classifier.</p>
+<form id="diabetes-form" class="dc-form">
+  <div class="dc-fields">
+    <label>High blood pressure
+      <select name="HighBP" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>High cholesterol
+      <select name="HighChol" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>Cholesterol check in past 5 years
+      <select name="CholCheck" required><option value="1">Yes</option><option value="0">No</option></select>
+    </label>
+    <label>BMI
+      <input name="BMI" type="number" min="1" max="100" step="1" value="27" required>
+    </label>
+    <label>Smoked at least 100 cigarettes in life
+      <select name="Smoker" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>History of stroke
+      <select name="Stroke" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>Coronary heart disease / heart attack
+      <select name="HeartDiseaseorAttack" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>Physical activity outside work
+      <select name="PhysActivity" required><option value="1">Yes</option><option value="0">No</option></select>
+    </label>
+    <label>Consume fruit at least once daily
+      <select name="Fruits" required><option value="1">Yes</option><option value="0">No</option></select>
+    </label>
+    <label>Consume vegetables at least once daily
+      <select name="Veggies" required><option value="1">Yes</option><option value="0">No</option></select>
+    </label>
+    <label>Heavy alcohol consumption (dataset definition)
+      <select name="HvyAlcoholConsump" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>Any health care coverage
+      <select name="AnyHealthcare" required><option value="1">Yes</option><option value="0">No</option></select>
+    </label>
+    <label>Could not see a doctor due to cost
+      <select name="NoDocbcCost" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>General health (1 best ? 5 worst)
+      <select name="GenHlth" required>
+        <option value="1">1 ? Excellent</option><option value="2">2 ? Very good</option>
+        <option value="3" selected>3 ? Good</option><option value="4">4 ? Fair</option>
+        <option value="5">5 ? Poor</option>
+      </select>
+    </label>
+    <label>Mental health: days affected (past 30)
+      <input name="MentHlth" type="number" min="0" max="30" value="0" required>
+    </label>
+    <label>Physical health: days affected (past 30)
+      <input name="PhysHlth" type="number" min="0" max="30" value="0" required>
+    </label>
+    <label>Serious difficulty walking or climbing stairs
+      <select name="DiffWalk" required><option value="0">No</option><option value="1">Yes</option></select>
+    </label>
+    <label>Sex (dataset coding)
+      <select name="Sex" required><option value="0">Female (0)</option><option value="1">Male (1)</option></select>
+    </label>
+    <label>Age category (1?13)
+      <select name="Age" required>
+        <option value="1">1 ? 18?24</option><option value="2">2 ? 25?29</option>
+        <option value="3">3 ? 30?34</option><option value="4">4 ? 35?39</option>
+        <option value="5">5 ? 40?44</option><option value="6">6 ? 45?49</option>
+        <option value="7">7 ? 50?54</option><option value="8" selected>8 ? 55?59</option>
+        <option value="9">9 ? 60?64</option><option value="10">10 ? 65?69</option>
+        <option value="11">11 ? 70?74</option><option value="12">12 ? 75?79</option>
+        <option value="13">13 ? 80 or older</option>
+      </select>
+    </label>
+    <label>Education category (1?6)
+      <select name="Education" required>
+        <option value="1">1 ? Never attended / kindergarten only</option>
+        <option value="2">2 ? Grades 1?8</option>
+        <option value="3">3 ? Grades 9?11</option>
+        <option value="4">4 ? Grade 12 / GED</option>
+        <option value="5">5 ? College 1?3 years</option>
+        <option value="6" selected>6 ? College 4+ years</option>
+      </select>
+    </label>
+    <label>Income category (1?8)
+      <select name="Income" required>
+        <option value="1">1 ? Under $10,000</option><option value="2">2 ? $10,000?$15,000</option>
+        <option value="3">3 ? $15,000?$20,000</option><option value="4">4 ? $20,000?$25,000</option>
+        <option value="5">5 ? $25,000?$35,000</option><option value="6">6 ? $35,000?$50,000</option>
+        <option value="7">7 ? $50,000?$75,000</option><option value="8" selected>8 ? $75,000 or more</option>
+      </select>
+    </label>
+  </div>
+  <button class="btn p dc-submit" type="submit">Classify survey status ?</button>
+  <p class="dc-status" id="diabetes-status" role="status" aria-live="polite"></p>
+  <div class="dc-result" id="diabetes-result" aria-live="polite" hidden></div>
+</form>
+<p class="dc-disclaimer">Survey-based research classifier only. It does not diagnose diabetes or predict future onset. Category codes and results require appropriate interpretation.</p>
+</div>
+</div>
+</div></section>
+
+<section id="how"><div class="wrap">
+<div class="head rv"><h2>How it works</h2><p>Select a step. Humans stay in the loop at the end of the chain.</p></div>
+<div class="rv"><div class="flow" role="tablist" aria-label="Workflow steps" id="flow"></div><div class="glass panel" id="fp" role="tabpanel" aria-live="polite"></div></div>
+</div></section>
+
+<section id="about"><div class="wrap">
+<div class="head rv"><h2>Responsible by design</h2><p>Health predictions affect people. The project treats limits as part of the product.</p></div>
+<div class="two rv" id="resp"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+<div><div class="brand" style="margin-bottom:10px">DiabetesCare AI</div><p>A research prototype exploring healthcare data and AI for readmission and diabetes-related indicators. The frontend connects to a locally hosted research API for model predictions, evaluation metrics, retrospective worklist exploration and intervention tracking.</p><p style="margin-top:10px">Responsible use: outputs are informational research results, not diagnoses or clinical decisions. No certifications, partnerships, or approvals are implied.</p></div>
+<nav aria-label="Footer"><a href="#home">Home</a><a href="#platform">Platform</a><a href="#insights">Insights</a><a href="#how">How it works</a><a href="#about">About</a></nav>
+</div></footer>
+<div id="tip" role="tooltip"></div>
+
+<script>
+/* ===== PLACEHOLDER DATA: illustrative only. Not patient information, not validated model output.
+   Replace by returning real data from services/api.js in the integration phase. ===== */
+const DATA={
+ gauge:{score:.62,cutoffs:[.35,.65],tiers:['Low','Medium','High']},
+ dist:[{l:'0–0.1',v:4},{l:'0.1–0.2',v:9},{l:'0.2–0.3',v:15},{l:'0.3–0.4',v:19},{l:'0.4–0.5',v:18},{l:'0.5–0.6',v:14},{l:'0.6–0.7',v:10},{l:'0.7–0.8',v:6},{l:'0.8–0.9',v:3},{l:'0.9–1',v:2}],
+ months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+ series:[{id:'a',name:'Mean model score',unit:'score',color:'#22d3ee',v:[.41,.43,.40,.44,.46,.45,.47,.44,.43,.45,.48,.46]},{id:'b',name:'High-tier share',unit:'% of records',color:'#8b5cf6',v:[16,17,15,18,20,19,21,18,17,19,22,20]},{id:'c',name:'Missing-data rate',unit:'% of fields',color:'#f5b84b',v:[9,8,8,7,7,6,6,6,5,5,5,4]}],
+ table:[['Prior inpatient visits','Utilization',.31,'Higher in upper tiers'],['Medication count','Medication',.24,'Mixed'],['Time in hospital','Encounter',.22,'Higher in upper tiers'],['Lab test count','Laboratory',.18,'Mixed'],['Self-reported general health','Survey',.27,'Higher in upper tiers']],
+ dims:[{t:'Electronic Health Records',p:'Clinical history, laboratory results, medications, vitals, and hospital encounters.',m:'Would supply the clinical backbone: what happened during care and what came before it.',c:'#22d3ee',i:'M12 8v8M8 12h8M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z'},{t:'Social Determinants of Health',p:'Access to care, education, income, and living circumstances.',m:'Would add context outside the clinic that often shapes outcomes.',c:'#6ee7b7',i:'M3 12l9-8 9 8M5 10v10h14V10M10 20v-6h4v6'},{t:'Lifestyle and Behavior',p:'Physical activity, health behaviors, and adherence-related information.',m:'Would describe day-to-day habits that records alone rarely capture.',c:'#8b5cf6',i:'M3 12h4l3-7 4 14 3-7h4'}],
+ feats:[['Hospital readmission risk analysis','Explore how encounter and history features relate to a readmission model score.','#22d3ee','M4 12a8 8 0 1116 0M12 12l5-4'],['Diabetes-related health indicators','Survey-based classification of diabetes status. It describes, it does not diagnose or forecast.','#6ee7b7','M12 3C7 9 5 12 5 15a7 7 0 0014 0c0-3-2-6-7-12z'],['Healthcare data exploration','Browse the inputs each model uses and how they are coded.','#60a5fa','M4 5h16M4 12h16M4 19h10'],['Lifestyle and SDOH insights','See how behavior and social context sit beside clinical data.','#8b5cf6','M12 3a9 9 0 100 18 9 9 0 000-18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18'],['Interactive analytics','Charts with tooltips, toggles, and exact values behind every mark.','#22d3ee','M4 20V10M10 20V4M16 20v-8M22 20H2'],['Explainable, responsible AI','Plain statements of what a score means and where it should not be used.','#6ee7b7','M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z']],
+ flow:[['Healthcare data','Records, survey responses, and social context enter as source datasets. Each keeps its own definitions and limits.'],['Data preparation','Cleaning, coding, and missing-value handling. Quality issues are documented, not hidden.'],['AI analysis','Research models produce scores or classes. These are model outputs, not clinical findings.'],['Risk insights','Scores appear with tiers, cutoffs, and plain-language context. Scores are not calibrated probabilities.'],['Human review','A qualified person weighs any output against the full clinical picture. Nothing here replaces that judgment.']],
+ resp:[['Data quality and limits','Models reflect the data they learn from. Gaps, coding choices, and population differences all shape results.'],['Evaluation and external validation','Results from one dataset do not carry over to another. Independent validation and calibration come before any real-world use.'],['Privacy-conscious handling','Health information is sensitive. Real data would be minimized, protected, and handled under applicable rules.'],['Research is not clinical decision-making','Predictions inform study. They do not diagnose, and they do not decide care.'],['Human oversight','People stay accountable for decisions. The tool supports questions, not answers.']]
+};
+/* Integration boundary: swap these for real fetches later (no network calls in this phase). */
+const api={getGauge:()=>DATA.gauge,getDist:()=>DATA.dist,getTrend:()=>({months:DATA.months,series:DATA.series}),getTable:()=>DATA.table};
+
+const $=s=>document.querySelector(s),NS='http://www.w3.org/2000/svg';
+const svg=(h,vb)=>`<svg viewBox="${vb}" width="100%" role="img" style="display:block;overflow:visible">${h}</svg>`;
+/* tooltip */
+const tip=$('#tip');
+function showTip(t,b,e,el){let x,y;if(e&&e.clientX!=null&&e.type.startsWith('mouse')||e&&e.type==='pointermove'){x=e.clientX;y=e.clientY}else{const r=el.getBoundingClientRect();x=r.left+r.width/2;y=r.top}
+tip.innerHTML=`<b>${t}</b>${b}`;tip.style.opacity=1;const w=tip.offsetWidth,h=tip.offsetHeight;
+tip.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+'px';tip.style.top=Math.max(8,y-h-14<8?y+18:y-h-14)+'px'}
+const hideTip=()=>tip.style.opacity=0;
+function bindTip(el,t,b){['pointermove','pointerenter'].forEach(n=>el.addEventListener(n,e=>showTip(t,b,e,el)));el.addEventListener('pointerleave',hideTip);el.addEventListener('focus',e=>showTip(t,b,e,el));el.addEventListener('blur',hideTip)}
+
+/* nav, progress, active link */
+const nav=$('#nav'),prog=$('#prog'),secs=[...document.querySelectorAll('main section')],alinks=[...document.querySelectorAll('.links a:not(.btn)')];
+function onScroll(){const h=document.documentElement,sc=h.scrollTop,m=h.scrollHeight-innerHeight;prog.style.transform=`scaleX(${m>0?sc/m:0})`;nav.classList.toggle('s',sc>30);
+let cur=secs[0].id;secs.forEach(s=>{if(s.getBoundingClientRect().top<innerHeight*.4)cur=s.id});alinks.forEach(a=>a.classList.toggle('on',a.hash==='#'+cur))}
+addEventListener('scroll',()=>requestAnimationFrame(onScroll),{passive:true});onScroll();
+$('#menu').onclick=e=>{const o=$('#links').classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',o)};
+$('#links').addEventListener('click',e=>{if(e.target.tagName==='A'){$('#links').classList.remove('open');$('#menu').setAttribute('aria-expanded',false)}});
+/* reveals (once) */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+/* hero tilt (fine pointers only) */
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!reduce&&matchMedia('(pointer:fine)').matches&&innerWidth>900){const st=$('#stage'),orb=$('#orb');
+$('#home').addEventListener('pointermove',e=>{const r=st.getBoundingClientRect();const dx=(e.clientX-r.left-r.width/2)/innerWidth,dy=(e.clientY-r.top-r.height/2)/innerHeight;orb.style.setProperty('--ry',(-12+dx*30)+'deg');orb.style.setProperty('--rx',(10-dy*24)+'deg')})}
+
+/* panels: dimensions */
+$('#dims').innerHTML=DATA.dims.map((d,i)=>`<button class="glass dim" aria-expanded="false" data-i="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="${d.c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d.i}"/></svg><h3>${d.t}</h3><p>${d.p}</p><div class="more">${d.m}</div></button>`).join('');
+$('#dims').addEventListener('click',e=>{const b=e.target.closest('.dim');if(b)b.setAttribute('aria-expanded',b.getAttribute('aria-expanded')!=='true')});
+$('#feat').innerHTML=DATA.feats.map(f=>`<article class="glass f" style="--g:${f[2]}"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${f[3]}"/></svg><h3>${f[0]}</h3><p>${f[1]}</p></article>`).join('');
+$('#resp').innerHTML=DATA.resp.map(r=>`<article class="glass"><h3>${r[0]}</h3><p>${r[1]}</p></article>`).join('');
+
+/* gauge: props {score,cutoffs,tiers} */
+function pol(p,r){const a=Math.PI*(1-p);return[150+r*Math.cos(a),150-r*Math.sin(a)]}
+function arc(p1,p2,r){const a=pol(p1,r),b=pol(p2,r);return`M${a[0]} ${a[1]}A${r} ${r} 0 0 1 ${b[0]} ${b[1]}`}
+function renderGauge(el,{score,cutoffs,tiers}){const [c1,c2]=cutoffs,cols=['#6ee7b7','#f5b84b','#fb7185'],ed=[0,c1,c2,1];
+const tier=score<c1?0:score<c2?1:2;
+let h=ed.slice(0,3).map((s,i)=>`<path class="g" tabindex="0" data-i="${i}" d="${arc(s,ed[i+1],110)}" fill="none" stroke="${cols[i]}" stroke-width="18" opacity="${i===tier?1:.35}" style="cursor:pointer"/>`).join('');
+cutoffs.forEach((c,i)=>{const a=pol(c,96),b=pol(c,126),t=pol(c,140);h+=`<line class="cm" tabindex="0" data-i="${i}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#e8f1ff" stroke-width="3" stroke-linecap="round" style="cursor:pointer"/><text x="${t[0]}" y="${t[1]+4}" text-anchor="middle">${c}</text>`});
+const n=pol(score,92);h+=`<line x1="150" y1="150" x2="${n[0]}" y2="${n[1]}" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" style="transition:all .6s"/><circle class="sc" tabindex="0" cx="150" cy="150" r="9" fill="#22d3ee"/>`;
+h+=`<text x="150" y="132" text-anchor="middle" style="font:700 30px var(--d);fill:#e8f1ff">${score.toFixed(2)}</text><text x="150" y="176" text-anchor="middle">Model score (0–1)</text>`;
+el.innerHTML=svg(h,'0 0 300 190')+`<div class="legend">${tiers.map((t,i)=>`<span style="font-size:.8rem;display:inline-flex;gap:6px;align-items:center"><i style="width:10px;height:10px;border-radius:50%;background:${cols[i]}"></i>${t}: ${i===0?'below '+c1:i===1?c1+' to <'+c2:c2+' and above'}</span>`).join('')}</div>`;
+el.querySelectorAll('.g').forEach(p=>{const i=+p.dataset.i;bindTip(p,tiers[i]+' tier','Scores '+(i===0?'below '+c1:i===1?'from '+c1+' up to '+c2:c2+' and above')+'. Demo cutoffs.');p.onclick=()=>$('#gd').innerHTML=`<b>${tiers[i]} tier</b>: demo interval ${i===0?'0 to '+c1:i===1?c1+' to '+c2:c2+' to 1'}. The tier is a label assigned from cutoffs; the score is the model’s output.`});
+el.querySelectorAll('.cm').forEach(m=>bindTip(m,'Cutoff '+cutoffs[+m.dataset.i],'Scores at or above this value move to the '+tiers[+m.dataset.i+1]+' tier.'));
+bindTip(el.querySelector('.sc'),'Score '+score.toFixed(2),'Demo model score. Not a calibrated probability.');
+$('#gd').innerHTML=`<b>${tiers[tier]} tier</b> because ${score.toFixed(2)} ${tier===0?'is below '+c1:tier===1?'falls between '+c1+' and '+c2:'is at or above '+c2}. Tier ≠ probability.`}
+const g=api.getGauge(),gs=$('#gs');gs.value=Math.round(g.score*100);
+const upd=()=>{const s=gs.value/100;$('#gv').textContent=s.toFixed(2);renderGauge($('#gauge'),{...g,score:s})};gs.oninput=upd;upd();
+
+/* bar chart: props items [{l,v}] */
+function renderBars(el,items,out){const W=560,H=240,L=40,B=34,T=10,bw=(W-L)/items.length,mx=Math.max(...items.map(i=>i.v)),sy=v=>H-B-(v/mx)*(H-B-T-6);
+let h=`<defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#14b8a6" stop-opacity=".6"/></linearGradient></defs>`;
+[0,.5,1].forEach(f=>{const v=Math.round(mx*f),y=sy(v);h+=`<line class="ax" x1="${L}" x2="${W}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${v}%</text>`});
+items.forEach((it,i)=>{const x=L+i*bw+5,y=sy(it.v);h+=`<rect class="bar" tabindex="0" data-i="${i}" x="${x}" width="${bw-10}" y="${H-B}" height="0" rx="4"><animate attributeName="y" from="${H-B}" to="${y}" dur=".6s" begin="${i*.04}s" fill="freeze"/><animate attributeName="height" from="0" to="${H-B-y}" dur=".6s" begin="${i*.04}s" fill="freeze"/></rect><text x="${x+(bw-10)/2}" y="${H-B+15}" text-anchor="middle" style="font-size:9px">${it.l}</text>`});
+h+=`<text x="${L+(W-L)/2}" y="${H-2}" text-anchor="middle">Model score band</text><text transform="rotate(-90)" x="${-(H-B)/2}" y="11" text-anchor="middle">Share of records (%)</text>`;
+el.innerHTML=svg(h,`0 0 ${W} ${H}`);
+el.querySelectorAll('.bar').forEach(b=>{const it=items[+b.dataset.i];bindTip(b,'Score '+it.l,`${it.v}% of demo records fall in this band.`);b.onclick=()=>{el.querySelectorAll('.bar').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');out.innerHTML=`<b>Score ${it.l}</b>: ${it.v}% of demo records. Illustrative only.`}})}
+renderBars($('#bars'),api.getDist(),$('#bd'));
+
+/* line chart: props {months,series}, toggles + range */
+function lineChart(el,leg,seg,out,{months,series}){const st={on:new Set(series.map(s=>s.id)),n:12};
+const draw=()=>{const W=600,H=250,L=46,B=30,T=12,R=12,ms=months.slice(-st.n),k=ms.length,sx=i=>L+i*(W-L-R)/(k-1);let h='';
+[0,.25,.5,.75,1].forEach(f=>{const y=T+f*(H-B-T);h+=`<line class="ax" x1="${L}" x2="${W-R}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${Math.round((1-f)*100)}%</text>`});
+ms.forEach((m,i)=>h+=`<text x="${sx(i)}" y="${H-12}" text-anchor="middle">${m}</text>`);
+h+=`<text x="${L+(W-L-R)/2}" y="${H}" text-anchor="middle">Month (demo)</text><text transform="rotate(-90)" x="${-(H-B)/2}" y="11" text-anchor="middle">Share of each series’ own range</text>`;
+series.filter(s=>st.on.has(s.id)).forEach(s=>{const v=s.v.slice(-k),lo=Math.min(...s.v),hi=Math.max(...s.v),sy=x=>T+(1-(x-lo)/(hi-lo||1))*(H-B-T);
+h+=`<path d="${v.map((x,i)=>(i?'L':'M')+sx(i)+' '+sy(x)).join('')}" fill="none" stroke="${s.color}" stroke-width="2.4" stroke-linejoin="round"/>`+v.map((x,i)=>`<circle class="pt" tabindex="0" data-s="${s.id}" data-i="${i}" cx="${sx(i)}" cy="${sy(x)}" r="4.5" fill="${s.color}" stroke="#050b1a" stroke-width="2"/>`).join('')});
+el.innerHTML=svg(h,`0 0 ${W} ${H}`);
+el.querySelectorAll('.pt').forEach(p=>{const s=series.find(x=>x.id===p.dataset.s),i=+p.dataset.i,val=s.v.slice(-k)[i];bindTip(p,s.name,`${ms[i]}: <b style="display:inline;color:#e8f1ff">${val}</b> ${s.unit}. Demo value.`);p.onclick=()=>out.innerHTML=`<b>${s.name}, ${ms[i]}</b>: ${val} ${s.unit}. Illustrative only. Each line is scaled to its own range so shapes are comparable; hover for real values.`})};
+leg.innerHTML=series.map(s=>`<button aria-pressed="true" data-id="${s.id}"><i style="background:${s.color}"></i>${s.name}</button>`).join('');
+leg.onclick=e=>{const b=e.target.closest('button');if(!b)return;const on=st.on.has(b.dataset.id);if(on&&st.on.size===1)return;on?st.on.delete(b.dataset.id):st.on.add(b.dataset.id);b.setAttribute('aria-pressed',!on);hideTip();draw()};
+seg.innerHTML=[[3,'3 months'],[6,'6 months'],[12,'12 months']].map(r=>`<button aria-pressed="${r[0]===12}" data-n="${r[0]}">${r[1]}</button>`).join('');
+seg.onclick=e=>{const b=e.target.closest('button');if(!b)return;st.n=+b.dataset.n;seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));hideTip();draw()};draw()}
+const tr=api.getTrend();lineChart($('#line'),$('#leg'),$('#seg'),$('#ld'),tr);
+
+/* sortable table: props rows */
+function table(rows){const cols=['Indicator','Source type','Demo weight','Demo pattern'];let sk=2,dir=-1;
+$('#tbl thead').innerHTML='<tr>'+cols.map((c,i)=>`<th scope="col" aria-sort="none"><button data-k="${i}">${c}</button></th>`).join('')+'</tr>';
+const draw=()=>{const r=[...rows].sort((a,b)=>(a[sk]>b[sk]?1:-1)*dir);$('#tbl tbody').innerHTML=r.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2].toFixed(2)}</td><td>${x[3]}</td></tr>`).join('');
+document.querySelectorAll('#tbl th').forEach((t,i)=>t.setAttribute('aria-sort',i===sk?(dir>0?'ascending':'descending'):'none'))};
+$('#tbl thead').onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;dir=k===sk?-dir:1;sk=k;draw()};draw()}
+table(api.getTable());
+
+/* workflow */
+const fl=$('#flow');fl.innerHTML=DATA.flow.map((f,i)=>`<button class="node" role="tab" aria-selected="${i===3}" data-i="${i}"><span>${i+1}</span>${f[0]}</button>`).join('');
+const pick=i=>{fl.querySelectorAll('.node').forEach((n,j)=>n.setAttribute('aria-selected',i===j));$('#fp').innerHTML=`<h3>${DATA.flow[i][0]}</h3><p class="mut" style="margin-top:8px">${DATA.flow[i][1]}</p>`};
+fl.onclick=e=>{const n=e.target.closest('.node');if(n)pick(+n.dataset.i)};
+fl.onkeydown=e=>{const c=+document.activeElement.dataset.i;if(isNaN(c))return;let n=c;if(e.key==='ArrowRight')n=Math.min(4,c+1);if(e.key==='ArrowLeft')n=Math.max(0,c-1);if(n!==c){e.preventDefault();pick(n);fl.children[n].focus()}};
+pick(3);
+
+/* Live model API integration */
+(() => {
+  const API_BASE = 'http://127.0.0.1:8765';
+
+  const readmissionNumeric = new Set([
+    'admission_type_id','discharge_disposition_id','admission_source_id',
+    'time_in_hospital','num_lab_procedures','num_procedures','num_medications',
+    'number_outpatient','number_emergency','number_inpatient','number_diagnoses'
+  ]);
+  const cdcNumeric = new Set([
+    'HighBP','HighChol','CholCheck','BMI','Smoker','Stroke',
+    'HeartDiseaseorAttack','PhysActivity','Fruits','Veggies',
+    'HvyAlcoholConsump','AnyHealthcare','NoDocbcCost','GenHlth',
+    'MentHlth','PhysHlth','DiffWalk','Sex','Age','Education','Income'
+  ]);
+
+  function formPayload(form, numericFields) {
+    const payload = {};
+    for (const [key, value] of new FormData(form).entries()) {
+      payload[key] = numericFields.has(key) ? Number(value) : value;
+    }
+    return payload;
+  }
+
+  function setStatus(node, message, state = '') {
+    node.textContent = message;
+    node.dataset.state = state;
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, ch => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[ch]);
+  }
+
+  function showResult(node, heading, score, details, warning) {
+    node.hidden = false;
+    node.replaceChildren();
+
+    const title = document.createElement('h4');
+    title.textContent = heading;
+    node.appendChild(title);
+
+    const scoreNode = document.createElement('div');
+    scoreNode.className = 'dc-score';
+    scoreNode.textContent = score;
+    node.appendChild(scoreNode);
+
+    const detailNode = document.createElement('p');
+    detailNode.textContent = details;
+    node.appendChild(detailNode);
+
+    const warningNode = document.createElement('p');
+    warningNode.textContent = warning;
+    node.appendChild(warningNode);
+  }
+
+  async function submitPrediction({formId, statusId, resultId, endpoint, numericFields, kind}) {
+    const form = document.getElementById(formId);
+    const status = document.getElementById(statusId);
+    const result = document.getElementById(resultId);
+    if (!form || !status || !result) return;
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const button = form.querySelector('button[type="submit"]');
+      const oldText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Running model?';
+      result.hidden = true;
+      setStatus(status, 'Sending inputs to the local prediction API?');
+
+      try {
+        const response = await fetch(API_BASE + endpoint, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(formPayload(form, numericFields))
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || `Request failed (HTTP ${response.status}).`);
+        }
+
+        if (typeof data.predicted_score !== 'number') {
+          throw new Error('The API response did not contain a numeric predicted_score.');
+        }
+
+        const pct = (data.predicted_score * 100).toFixed(1) + '%';
+        if (kind === 'readmission') {
+          showResult(
+            result,
+            'Readmission model result',
+            pct,
+            `Risk tier: ${data.risk_tier}. This is the model's score for historical readmission within 30 days; it is not a calibrated clinical probability.`,
+            data.warning || 'Research prototype; external validation is required.'
+          );
+        } else {
+          const classText = data.class_meaning?.[String(data.predicted_class)] || `Survey target class ${data.predicted_class}`;
+          showResult(
+            result,
+            'CDC survey classifier result',
+            pct,
+            `Predicted class: ${data.predicted_class} ? ${classText}. Classification threshold: ${data.threshold}. This is not a diagnosis or a forecast of future onset.`,
+            data.warning || 'Research classifier; external validation is required.'
+          );
+        }
+
+        const raw = document.createElement('details');
+        raw.style.marginTop = '12px';
+        const summary = document.createElement('summary');
+        summary.textContent = 'View raw API response';
+        summary.style.cursor = 'pointer';
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(data, null, 2);
+        raw.append(summary, pre);
+        result.appendChild(raw);
+
+        setStatus(status, 'Prediction received successfully.', 'success');
+      } catch (error) {
+        result.hidden = false;
+        result.replaceChildren();
+        const title = document.createElement('h4');
+        title.textContent = 'Unable to run prediction';
+        const message = document.createElement('p');
+        message.textContent = error.message || 'Unexpected error.';
+        const hint = document.createElement('p');
+        hint.textContent = 'Check that api_server.py is running at http://127.0.0.1:8765 and that the browser can reach it.';
+        result.append(title, message, hint);
+        setStatus(status, 'Prediction failed. See the message below.', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = oldText;
+      }
+    });
+  }
+
+  submitPrediction({
+    formId:'readmission-form',
+    statusId:'readmission-status',
+    resultId:'readmission-result',
+    endpoint:'/api/readmission',
+    numericFields:readmissionNumeric,
+    kind:'readmission'
+  });
+
+  submitPrediction({
+    formId:'diabetes-form',
+    statusId:'diabetes-status',
+    resultId:'diabetes-result',
+    endpoint:'/api/diabetes-status',
+    numericFields:cdcNumeric,
+    kind:'diabetes'
+  });
+})();
+
+
+// Real API dashboard, retrospective worklist and intervention tracker.
+(() => {
+  const API = 'http://127.0.0.1:8765';
+  const $ = (id) => document.getElementById(id);
+  const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+  const pct = (value) => Number.isFinite(Number(value)) ? `${(Number(value) * 100).toFixed(1)}%` : '?';
+  const num = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString() : '?';
+  const metric = (label, value) =>
+    `<div class="api-stat"><div class="value">${escapeHTML(value)}</div><div class="label">${escapeHTML(label)}</div></div>`;
+  const setStatus = (id, message, type='') => {
+    const node = $(id);
+    if (!node) return;
+    node.textContent = message;
+    node.className = `api-status ${type}`.trim();
+  };
+  async function getJSON(url) {
+    const response = await fetch(`${API}${url}`);
+    const data = await response.json();
+    if (!response.ok || data.status === 'error') throw new Error(data.message || `Request failed (${response.status})`);
+    return data;
+  }
+
+  async function loadMetrics() {
+    try {
+      const data = await getJSON('/api/metrics');
+      const r = data.readmission;
+      const rm = r.metrics;
+      const d = data.diabetes_status;
+      const dm = d.metrics;
+
+      $('api-model-metrics').innerHTML = `
+        <h4 style="margin-top:18px">Hospital readmission model</h4>
+        <p class="api-note">${escapeHTML(r.task)} ? ${escapeHTML(r.dataset)} ? ${escapeHTML(r.evaluation)}</p>
+        <div class="api-grid">
+          ${metric('Test accuracy', pct(rm.test_accuracy))}
+          ${metric('Test precision', pct(rm.test_precision))}
+          ${metric('Test recall', pct(rm.test_recall))}
+          ${metric('Test F1', pct(rm.test_f1))}
+          ${metric('Test ROC-AUC', Number(rm.test_roc_auc).toFixed(3))}
+          ${metric('Average precision', Number(rm.test_average_precision).toFixed(3))}
+          ${metric('Test encounters', num(rm.test_encounters))}
+          ${metric('Distinct patients', num(rm.test_distinct_patients))}
+        </div>
+        <p class="api-note">Confusion matrix (TN / FP / FN / TP): ${rm.test_confusion_matrix_tn_fp_fn_tp.map(num).join(' / ')}. Decision threshold selected on validation data: ${Number(rm.threshold_selected_on_validation).toFixed(3)}.</p>
+        <p class="api-note">${escapeHTML(rm.warning)}</p>
+        <h4 style="margin-top:22px">CDC survey diabetes-status classifier</h4>
+        <p class="api-note">${escapeHTML(d.task)} ? ${escapeHTML(d.dataset)} ? ${escapeHTML(d.evaluation)}</p>
+        <div class="api-grid">
+          ${metric('Test accuracy', pct(dm.test_accuracy))}
+          ${metric('Test precision', pct(dm.test_precision))}
+          ${metric('Test recall', pct(dm.test_recall))}
+          ${metric('Test F1', pct(dm.test_f1))}
+          ${metric('Test ROC-AUC', Number(dm.test_roc_auc).toFixed(3))}
+          ${metric('Average precision', Number(dm.test_average_precision).toFixed(3))}
+          ${metric('Test records', num(dm.split.test))}
+          ${metric('Dataset records', num(dm.dataset_records))}
+        </div>
+        <p class="api-note">Confusion matrix: TN ${num(dm.test_confusion_matrix[0][0])}, FP ${num(dm.test_confusion_matrix[0][1])}, FN ${num(dm.test_confusion_matrix[1][0])}, TP ${num(dm.test_confusion_matrix[1][1])}. Validation-selected threshold: ${Number(dm.threshold_selected_on_validation).toFixed(3)}.</p>
+        <p class="api-note">${escapeHTML(dm.warning)}</p>`;
+
+      const tiers = r.risk_tiers.test_results_by_tier;
+      $('api-tier-results').innerHTML = `
+        <div class="api-table-wrap"><table class="api-table">
+          <thead><tr><th>Risk tier</th><th>Encounters</th><th>Mean model score</th><th>Observed readmission rate</th><th>Observed readmissions</th></tr></thead>
+          <tbody>${tiers.map(t => `<tr>
+            <td><span class="api-tier">${escapeHTML(t.risk_tier)}</span></td>
+            <td>${num(t.encounters)}</td><td>${pct(t.mean_predicted_probability)}</td>
+            <td>${pct(t.observed_readmission_rate)}</td><td>${num(t.actual_readmissions)}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>
+        <p class="api-note">Tier boundaries were derived from validation-set score tertiles: Low/Medium ${Number(r.risk_tiers.validation_cutoffs.low_to_medium).toFixed(3)}; Medium/High ${Number(r.risk_tiers.validation_cutoffs.medium_to_high).toFixed(3)}. These are research groupings, not medical decision rules.</p>`;
+
+      $('api-data-coverage').innerHTML = `
+        <div class="api-coverage">${data.data_coverage.map(item => `
+          <div class="api-coverage-item"><strong>${escapeHTML(item.category)}</strong>
+            <span>${escapeHTML(item.status)}</span><div class="api-note">${escapeHTML(item.details)}</div>
+          </div>`).join('')}</div>
+        <h4 style="margin-top:20px">Integration limitations</h4>
+        <ul class="api-note">${data.integration_limitations.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>`;
+      setStatus('api-dashboard-status', 'Live metrics loaded from the local API.', 'success');
+    } catch (error) {
+      setStatus('api-dashboard-status', `Could not load metrics: ${error.message}`, 'error');
+    }
+  }
+
+  const PAGE_SIZE = 20;
+  let worklistOffset = 0;
+  let worklistTotal = 0;
+  let worklistRecords = [];
+  let interventionRecords = {};
+
+  async function loadInterventions() {
+    const data = await getJSON('/api/interventions');
+    interventionRecords = data.records || {};
+    renderInterventions();
+    return data;
+  }
+
+  function renderInterventions() {
+    const entries = Object.values(interventionRecords);
+    $('intervention-summary').textContent = `${entries.length} saved intervention record(s).`;
+    if (!entries.length) {
+      $('intervention-table').innerHTML = '<p class="api-note">No intervention records saved yet. Use the worklist editor to add one.</p>';
+      return;
+    }
+    $('intervention-table').innerHTML = `<table class="api-table">
+      <thead><tr><th>Worklist reference</th><th>Status</th><th>Follow-up date</th><th>Notes</th><th>Last updated</th></tr></thead>
+      <tbody>${entries.map(item => `<tr>
+        <td>${escapeHTML(item.worklist_reference)}</td><td>${escapeHTML(item.status)}</td>
+        <td>${escapeHTML(item.follow_up_date || '?')}</td><td>${escapeHTML(item.notes || '?')}</td>
+        <td>${escapeHTML(item.updated_at || '?')}</td>
+      </tr>`).join('')}</tbody></table>`;
+  }
+
+  function interventionEditor(record) {
+    const saved = interventionRecords[record.worklist_reference] || {};
+    const status = saved.status || 'Not reviewed';
+    return `<form class="api-intervention" data-intervention-form="${escapeHTML(record.worklist_reference)}">
+      <select name="status" aria-label="Intervention status">
+        ${['Not reviewed','Reviewed','Follow-up planned','Completed'].map(s => `<option ${s === status ? 'selected' : ''}>${s}</option>`).join('')}
+      </select>
+      <input name="follow_up_date" type="date" aria-label="Follow-up date" value="${escapeHTML(saved.follow_up_date || '')}">
+      <textarea name="notes" aria-label="Intervention notes" placeholder="Add follow-up notes?">${escapeHTML(saved.notes || '')}</textarea>
+      <button class="btn p" type="submit">Save update</button>
+    </form>`;
+  }
+
+  async function loadWorklist() {
+    setStatus('worklist-status', 'Loading worklist?');
+    const tier = $('worklist-tier').value;
+    const search = $('worklist-search').value.trim();
+    const params = new URLSearchParams({limit:String(PAGE_SIZE), offset:String(worklistOffset)});
+    if (tier !== 'All') params.set('risk_tier', tier);
+    if (search) params.set('q', search);
+
+    try {
+      const data = await getJSON(`/api/worklist?${params.toString()}`);
+      worklistRecords = data.records || [];
+      worklistTotal = data.total || 0;
+      $('worklist-summary').textContent =
+        `${num(worklistTotal)} matching encounters ? All tiers: High ${num(data.tier_counts.High)}, Medium ${num(data.tier_counts.Medium)}, Low ${num(data.tier_counts.Low)}.`;
+      $('worklist-table').innerHTML = worklistRecords.length ? `
+        <table class="api-table">
+          <thead><tr><th>Reference / priority</th><th>Model score / tier</th><th>Age group</th><th>Stay</th><th>Prior visits (outpatient / emergency / inpatient)</th><th>Labs / procedures / medications</th><th>Diagnoses</th><th>Glucose / A1C</th><th>Intervention update</th></tr></thead>
+          <tbody>${worklistRecords.map(record => `<tr>
+            <td><strong>${escapeHTML(record.worklist_reference)}</strong><br><span class="api-small">${escapeHTML(record.priority)}</span></td>
+            <td>${pct(record.predicted_score)}<br><span class="api-tier">${escapeHTML(record.risk_tier)}</span></td>
+            <td>${escapeHTML(record.age_group)}</td>
+            <td>${num(record.length_of_stay_days)} days</td>
+            <td>${num(record.prior_outpatient_visits)} / ${num(record.prior_emergency_visits)} / ${num(record.prior_inpatient_visits)}</td>
+            <td>${num(record.lab_procedures)} / ${num(record.procedures)} / ${num(record.medication_count)}</td>
+            <td>${num(record.diagnosis_count)}</td>
+            <td>${escapeHTML(record.max_glucose_result)} / ${escapeHTML(record.a1c_result)}</td>
+            <td>${interventionEditor(record)}</td>
+          </tr>`).join('')}</tbody>
+        </table>` : '<p class="api-note">No matching encounters found.</p>';
+      $('worklist-page').textContent = `Showing ${worklistRecords.length ? worklistOffset + 1 : 0}?${Math.min(worklistOffset + worklistRecords.length, worklistTotal)} of ${num(worklistTotal)}`;
+      $('worklist-prev').disabled = worklistOffset <= 0;
+      $('worklist-next').disabled = worklistOffset + PAGE_SIZE >= worklistTotal;
+      setStatus('worklist-status', data.warning || 'Worklist loaded.', 'success');
+    } catch (error) {
+      $('worklist-table').replaceChildren();
+      setStatus('worklist-status', `Could not load worklist: ${error.message}`, 'error');
+    }
+  }
+
+  $('worklist-tier').addEventListener('change', () => { worklistOffset = 0; loadWorklist(); });
+  $('worklist-search').addEventListener('input', () => {
+    clearTimeout(window.__worklistSearchTimer);
+    window.__worklistSearchTimer = setTimeout(() => { worklistOffset = 0; loadWorklist(); }, 300);
+  });
+  $('worklist-refresh').addEventListener('click', () => { loadWorklist(); loadInterventions().catch(() => {}); });
+  $('worklist-prev').addEventListener('click', () => { worklistOffset = Math.max(0, worklistOffset - PAGE_SIZE); loadWorklist(); });
+  $('worklist-next').addEventListener('click', () => {
+    if (worklistOffset + PAGE_SIZE < worklistTotal) { worklistOffset += PAGE_SIZE; loadWorklist(); }
+  });
+
+  $('worklist-table').addEventListener('submit', async (event) => {
+    const form = event.target.closest('[data-intervention-form]');
+    if (!form) return;
+    event.preventDefault();
+    const reference = form.dataset.interventionForm;
+    const formData = new FormData(form);
+    const body = {
+      worklist_reference: reference,
+      status: formData.get('status'),
+      follow_up_date: formData.get('follow_up_date') || '',
+      notes: formData.get('notes') || ''
+    };
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const response = await fetch(`${API}/api/interventions`, {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok || data.status === 'error') throw new Error(data.message || 'Save failed.');
+      setStatus('intervention-status', `Saved intervention for ${reference}.`, 'success');
+      await loadInterventions();
+      await loadWorklist();
+    } catch (error) {
+      setStatus('intervention-status', `Could not save update: ${error.message}`, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  loadMetrics();
+  loadInterventions().catch(error => setStatus('intervention-status', error.message, 'error'));
+  loadWorklist();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "status": "success",
+  "purpose": "Retrospective held-out test-set prioritization demonstration",
+  "source_dataset": "UCI Diabetes 130-US Hospitals, 1999-2008",
+  "model": "Baseline HistGradientBoosting (16 features)",
+  "test_encounters": 20191,
+  "distinct_test_patients": 14304,
+  "validation_tier_cutoffs": {
+    "low_to_medium": 0.3832784525982264,
+    "medium_to_high": 0.5204458669156627
+  },
+  "tier_summary": [
+    {
+      "risk_tier": "Low",
+      "encounters": 6819,
+      "mean_predicted_score": 0.3015590483941927,
+      "reference_observed_readmission_rate": 0.05572664613579704
+    },
+    {
+      "risk_tier": "Medium",
+      "encounters": 6777,
+      "mean_predicted_score": 0.45314301401800205,
+      "reference_observed_readmission_rate": 0.09517485613103142
+    },
+    {
+      "risk_tier": "High",
+      "encounters": 6595,
+      "mean_predicted_score": 0.6090318902198635,
+      "reference_observed_readmission_rate": 0.18362395754359362
+    }
+  ],
+  "worklist_file": "D:\\DiabetesCareAI\\readmission_fair_comparison\\retrospective_patient_worklist.csv",
+  "limitations": [
+    "This is a retrospective research demonstration, not a live patient worklist.",
+    "Individual patient and encounter identifiers are not included.",
+    "Individual actual readmission outcomes are not included.",
+    "Risk scores are not clinically calibrated probabilities.",
+    "Tier boundaries are relative validation-set tertiles, not medical decision thresholds.",
+    "Some model features may only be available at or near discharge; prediction-time availability must be assessed.",
+    "The source data is historical and requires external validation."
+  ]
+}
